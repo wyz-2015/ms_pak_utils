@@ -38,6 +38,8 @@ void Deque_pop(Deque* restrict d)
 	}
 	d->end = lastNode->prev;
 	d->__len__ -= 1;
+
+	free(lastNode);
 }
 
 void Deque_clear(Deque* restrict d)

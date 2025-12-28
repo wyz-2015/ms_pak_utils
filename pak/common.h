@@ -15,6 +15,6 @@
 #define min(a, b) ((a) <= (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
 
-extern uint32_t get_file_len(FILE* f);
+extern uint32_t get_file_len(FILE* __restrict f);
 
 #endif

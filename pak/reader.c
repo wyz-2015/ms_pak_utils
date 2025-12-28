@@ -41,18 +41,32 @@ void PAKReader_init(PAKReader* restrict preader, const Args* restrict args)
 
 	fread(preader->fileOffsetTable, sizeof(uint32_t), preader->fileOffsetTableCount, preader->pak);
 
-	// 记录文件数据
-	preader->fileArray = (PAK_File**)malloc(preader->header->fileCount * sizeof(PAK_File*));
+	// 记录文件数据。本来在初始化时就计算，但为了MS7的复杂情况，将功能分离出去。
+
+	// 为7代准备的，MS7的偏移表很混乱，有值为0却计入文件数的情况
+	preader->fileCount_real = 0;
+	for (uint32_t i = 0; i < preader->header->fileCount; i += 1) {
+		if (preader->fileOffsetTable[i]) {
+			preader->fileCount_real += 1;
+		}
+	}
+
+	preader->fileArray = (PAK_File**)malloc(preader->fileCount_real * sizeof(PAK_File*));
 	if (not preader->fileArray) {
 		error(ENOMEM, ENOMEM, "%s：为preader->fileArray(%p)malloc失败", __func__, preader->fileArray);
 	}
-	for (uint32_t i = 0; i < preader->header->fileCount; i += 1) {
+	// for (uint32_t i = 0; i < preader->header->fileCount; i += 1) {
+	for (uint32_t i = 0; i < preader->fileCount_real; i += 1) {
 		preader->fileArray[i] = (PAK_File*)malloc(sizeof(PAK_File));
 		if (not preader->fileArray[i]) {
 			error(ENOMEM, ENOMEM, "%s：为preader->fileArray[%u](%p)malloc失败", __func__, i, preader->fileArray[i]);
 		}
 
 		preader->fileArray[i]->content = NULL;
+		preader->fileArray[i]->bufferSize = 0;
+		preader->fileArray[i]->length = 0;
+		preader->fileArray[i]->relativeOffset = 0;
+		/*
 		preader->fileArray[i]->relativeOffset = preader->fileOffsetTable[i];
 		if (i < preader->header->fileCount - 1) { // 文件长 = 下一文件偏移 - 此文件偏移
 			preader->fileArray[i]->length = preader->fileOffsetTable[i + 1] - preader->fileOffsetTable[i];
@@ -61,7 +75,28 @@ void PAKReader_init(PAKReader* restrict preader, const Args* restrict args)
 			preader->fileArray[i]->length = min(get_file_len(preader->pak), preader->fileOffsetTable[preader->fileOffsetTableCount - 1]) - preader->fileOffsetTable[i];
 			preader->fileArray[i]->bufferSize = max(get_file_len(preader->pak), preader->fileOffsetTable[preader->fileOffsetTableCount - 1]) - preader->fileOffsetTable[i];
 		}
+		*/
 	}
+}
+
+void PAKReader_calc_offset_len(PAKReader* restrict preader) // 新的、分离出来的，获取偏移表中真正有效偏移值，计算各文件的实际长度的函数
+{
+	uint32_t i_array = 0, i;
+	for (i = 0; i < preader->header->fileCount; i += 1) {
+		if (preader->fileOffsetTable[i]) {
+			preader->fileArray[i_array]->relativeOffset = preader->fileOffsetTable[i];
+			i_array += 1;
+		}
+	}
+
+	for (i_array = 0; i_array < preader->fileCount_real - 1; i_array += 1) {
+		preader->fileArray[i_array]->length = preader->fileArray[i_array + 1]->relativeOffset - preader->fileArray[i_array]->relativeOffset;
+		preader->fileArray[i_array]->bufferSize = preader->fileArray[i_array]->length;
+	}
+
+	uint32_t fileLen = preader->fileOffsetTable[preader->fileOffsetTableCount - 1], fileLen_real = get_file_len(preader->pak);
+	preader->fileArray[preader->fileCount_real - 1]->length = min(fileLen_real, fileLen) - preader->fileArray[preader->fileCount_real - 1]->relativeOffset;
+	preader->fileArray[preader->fileCount_real - 1]->bufferSize = max(fileLen_real, fileLen) - preader->fileArray[preader->fileCount_real - 1]->relativeOffset;
 }
 
 void PAKReader_clear(PAKReader* restrict preader)
@@ -71,7 +106,7 @@ void PAKReader_clear(PAKReader* restrict preader)
 		preader->fileOffsetTable = NULL;
 	}
 	if (preader->fileArray) {
-		for (uint32_t i = 0; i < preader->header->fileCount; i += 1) {
+		for (uint32_t i = 0; i < preader->fileCount_real; i += 1) {
 			if (preader->fileArray[i]->content) {
 				free(preader->fileArray[i]->content);
 				preader->fileArray[i]->content = NULL;
@@ -120,7 +155,7 @@ void PAKReader_copy_content(PAKReader* restrict preader, const uint32_t fileInde
 		error(EINVAL, EINVAL, "%s：无法打开文件%s的指针%p", __func__, outFilePath, binFile);
 	}
 	// fwrite(preader.fileArray[i]->content, preader.fileArray[i]->length, 1, binFile);
-	fwrite(preader->fileArray[fileIndex]->content, preader->fileArray[fileIndex]->bufferSize, 1, binFile); // TODO: 针对最后一个文件，还是要把文件长和缓冲区长分开。已解决
+	fwrite(preader->fileArray[fileIndex]->content, preader->fileArray[fileIndex]->bufferSize, 1, binFile); // 针对最后一个文件，还是要把文件长和缓冲区长分开。已解决
 	fclose(binFile);
 }
 
@@ -129,10 +164,12 @@ void extract(Args* restrict args)
 	PAKReader preader;
 	PAKReader_init(&preader, args);
 
+	PAKReader_calc_offset_len(&preader);
+
 	char outFilePath[FILEPATH_LEN_MAX];
 
 	if (args->extractAll) {
-		for (uint32_t i = 0; i < preader.header->fileCount; i += 1) {
+		for (uint32_t i = 0; i < preader.fileCount_real; i += 1) {
 			sprintf(outFilePath, "%s/%s0x%08x", args->dir, args->prefix, preader.fileArray[i]->relativeOffset);
 			if (args->verbose) {
 				puts(outFilePath);
@@ -167,9 +204,14 @@ void list(Args* restrict args)
 	PAKReader preader;
 	PAKReader_init(&preader, args);
 
-	puts("Offset(hex)\tLength(hex)\n==========================");
-	for (uint32_t i = 0; i < preader.header->fileCount; i += 1) {
-		printf("0x%08x\t0x%08x\n",
+	PAKReader_calc_offset_len(&preader);
+
+	printf("实际文件数：%u\n", preader.fileCount_real);
+
+	puts("No.\tOffset(hex)\tLength(hex)\n=====================================");
+	for (uint32_t i = 0; i < preader.fileCount_real; i += 1) {
+		printf("%u\t0x%08x\t0x%08x\n",
+		    i,
 		    preader.fileArray[i]->relativeOffset,
 		    preader.fileArray[i]->length);
 	}

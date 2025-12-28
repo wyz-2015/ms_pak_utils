@@ -10,6 +10,7 @@ typedef struct PAKReader {
 
 	uint32_t* fileOffsetTable;
 	uint32_t fileOffsetTableCount;
+	uint32_t fileCount_real; // 实际文件数。MS6、3D的文件头中记载的文件数是真实的，但7就经常不真实了。
 
 	PAK_File** fileArray; // 针对文件内容，便于操作的结构体的数组
 
