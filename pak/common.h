@@ -10,4 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define FILEPATH_LEN_MAX 1024
+
+#define min(a, b) ((a) <= (b) ? (a) : (b))
+#define max(a, b) ((a) >= (b) ? (a) : (b))
+
+extern uint32_t get_file_len(FILE* f);
+
 #endif

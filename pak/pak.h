@@ -21,6 +21,7 @@ typedef struct PAK_Header { // [0x00, 0x10)	PAK头部，0x10 Bytes。区间表�
 typedef struct PAK_File {
 	uint32_t relativeOffset; // 文件相对偏移
 	uint32_t length;	 // 文件长
+	uint32_t bufferSize;	 // 缓冲区长，专门解决最后一文件的，偏移表中记载PAK总长度与实际不符的问题
 	void* content;		 // 只有这个，文件内容，是实际写入PAK文件中的。上面两项只是辅助
 } PAK_File;
 
