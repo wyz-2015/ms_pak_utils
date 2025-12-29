@@ -15,6 +15,10 @@
 #define min(a, b) ((a) <= (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
 
+#define B2KB(x) ((double)(x) / 1024)
+
 extern uint32_t get_file_len(FILE* __restrict f);
+extern uint32_t get_file_lines(FILE* __restrict f);
+extern void str_rstrip(char* __restrict s, const size_t s_len);
 
 #endif

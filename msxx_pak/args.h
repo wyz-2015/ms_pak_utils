@@ -8,15 +8,13 @@ typedef struct Args {
 	char mode;
 	const char* filePath;
 	const char* dir;
-	const char* prefix;
-	const char* fileListPath; // 为-T / --files-from参数准备的
 
 	Deque* itemDeque;
 
 	bool verbose;
 	bool extractAll;
 
-	const char* magicStr;
+	const char* fileListPath;
 } Args;
 
 #endif

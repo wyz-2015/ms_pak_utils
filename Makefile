@@ -1,6 +1,9 @@
 CC=gcc
 
-all : PAK
+all : PAK MSXX_PAK
 
 PAK :
 	make -C ./pak/
+
+MSXX_PAK :
+	make -C ./msxx_pak/

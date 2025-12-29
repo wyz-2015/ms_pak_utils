@@ -1,7 +1,7 @@
 CC=gcc
 SRC=deque.c reader.c main.c writer.c common.c
 INCLUDE=-I./
-BIN=./../ms3d_pak
+BIN=./../bin/ms3d_pak
 
 all : PAK
 
