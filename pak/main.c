@@ -157,13 +157,19 @@ int main(int argc, char** argv)
 		break;
 	}
 	case 'c': {
-		// puts("尚未支持"); // TODO
 		archive(&args);
 		break;
 	}
 	default: {
 		error(EINVAL, EINVAL, "-t -c -x 必须指定其中之一");
+		break;
 	}
+	}
+
+	if (itemList) {
+		Deque_clear(itemList);
+		free(itemList);
+		itemList = NULL;
 	}
 
 	return 0;

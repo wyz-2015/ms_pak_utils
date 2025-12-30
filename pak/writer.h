@@ -19,9 +19,9 @@ extern void list(Args* __restrict args);
 */
 
 extern void PAKWriter_init(PAKWriter* __restrict pwriter, const Args* __restrict args); // 类的初始化
-extern void PAKWriter_read(PAKWriter* __restrict pwriter);			    // 读取待写入文件的内容
-extern void PAKWriter_clac_offset(PAKWriter* __restrict pwriter);			    // 计算文件偏移表
-extern void PAKWriter_build_pakFile(PAKWriter* __restrict pwriter);		    // 构建PAK文件
+extern void PAKWriter_read(PAKWriter* __restrict pwriter);				// 读取待写入文件的内容
+extern void PAKWriter_clac_offset(PAKWriter* __restrict pwriter);			// 计算文件偏移表
+extern void PAKWriter_build_pakFile(PAKWriter* __restrict pwriter);			// 构建PAK文件
 // 清理类，释放内存
 #define PAKWriter_clear(pwriter) PAKReader_clear((pwriter))
 

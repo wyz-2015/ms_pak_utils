@@ -13,8 +13,7 @@ typedef struct PAK_Header {
 
 // 紧随文件头后，一条4 * 4 Byte。fileCount条如下条目，组成pak文件目录
 typedef struct PAK_Item {
-	// 以下两条为猜测，
-	// 且暂且以“子目录”“子目录中的文件”来称呼猜测的这种关系。
+	// 以下两条为猜测，且暂且以“子目录”“子目录中的文件”来称呼猜测的这种关系。
 	uint32_t subID;	 // 在子目录中的文件ID
 	uint32_t subDir; // 存在于何子目录
 

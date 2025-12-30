@@ -36,3 +36,43 @@ void str_rstrip(char* restrict s, const size_t s_len)
 		ps -= 1;
 	}
 }
+
+int strcasecmp(const char* s1, const char* s2) // 不计大小写地比较两个字符串的大小
+{
+	char c1, c2;
+	while (*s1 and *s2) {
+		c1 = tolower(*s1);
+		c2 = tolower(*s2);
+
+		if (c1 > c2) {
+			return 1;
+		} else if (c1 < c2) {
+			return -1;
+		}
+
+		s1 += 1;
+		s2 += 1;
+	}
+
+	c1 = tolower(*s1);
+	c2 = tolower(*s2);
+	if (c1 > c2) { // 同时避免空字符串的情况
+		return 1;
+	} else if (c1 < c2) {
+		return -1;
+	} else {
+		return 0;
+	}
+}
+
+bool feof_(FILE* restrict inFile) // 是否到达文件结尾
+{
+	char cTest = fgetc(inFile); // 试取字
+
+	if (cTest != EOF) {
+		ungetc(cTest, inFile); // 若不是则放回流中，甚至可以是stdin
+		return false;
+	} else {
+		return true;
+	}
+}

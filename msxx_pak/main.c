@@ -101,8 +101,31 @@ int main(int argc, char** argv)
 
 	argp_parse(&argp, argc, argv, 0, 0, &args);
 
-	if (args.fileListPath) {
-		// TODO
+	if (args.fileListPath) { // 处理-T / --files-from
+		FILE* fileListFile = fopen(args.fileListPath, "rt");
+		if (not fileListFile) {
+			error(ENOENT, ENOENT, "%s：无法文本模式打开文件%s的指针%p", __func__, args.fileListPath, fileListFile);
+		}
+
+		uint32_t lines = get_file_lines(fileListFile), lines_real = 0;
+		char itemDeque_fromFile[lines][FILEPATH_LEN_MAX], tempStr[FILEPATH_LEN_MAX];
+		memset(itemDeque_fromFile, 0, lines * FILEPATH_LEN_MAX * sizeof(char));
+		memset(tempStr, 0, FILEPATH_LEN_MAX * sizeof(char));
+
+		while (fgets(tempStr, FILEPATH_LEN_MAX, fileListFile)) {
+			str_rstrip(tempStr, strlen(tempStr));
+
+			if (*tempStr) { // rstrip()后不是空字符串
+				strcpy(itemDeque_fromFile[lines_real], tempStr);
+				lines_real += 1;
+			}
+		}
+
+		for (uint32_t l = 0; l < lines_real; l += 1) {
+			Deque_append(itemList, itemDeque_fromFile[l]);
+		}
+
+		fclose(fileListFile);
 	}
 
 	switch (args.mode) {
@@ -123,6 +146,12 @@ int main(int argc, char** argv)
 		error(EINVAL, EINVAL, "-t -c -x 必须指定其中之一");
 		break;
 	}
+	}
+
+	if (itemList) {
+		Deque_clear(itemList);
+		free(itemList);
+		itemList = NULL;
 	}
 
 	return 0;
