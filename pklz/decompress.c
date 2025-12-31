@@ -68,6 +68,10 @@ void Decomper_outFile_select(Decomper* restrict dec)
 		// dec->outFile = stdout;
 		error(EPERM, EPERM, "%s：受LZSS算法实现中，有“回读”行为的限制：stdout作为只写流无法做到此操作。这里的实现不是buffer解压到buffer，而是两个FILE*一个读一个写。", __func__);
 	} else { // 若传入文件以“.pklz”为扩展名(不计大小写)，则自动指定输出到去掉扩展名的文件中
+		if (not dec->args->inFilePath) {
+			error(EINVAL, EINVAL, "%s：若从stdin读取文件，则必须指定输出路径", __func__);
+		}
+
 		const char *sufferix = ".pklz",
 			   *inFilePath_sufferix = dec->args->inFilePath + strlen(dec->args->inFilePath) - strlen(sufferix),
 			   *warningMessage = "程序仅支持遇到传入文件名为“xxx.pklz”时自动指定输出文件名为“xxx”。";

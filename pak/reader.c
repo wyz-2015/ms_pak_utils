@@ -230,12 +230,13 @@ void list(Args* restrict args)
 
 	printf("实际文件数：%u\n", preader.fileCount_real);
 
-	puts("No.\tOffset(hex)\tLength(hex)\n=====================================");
+	puts("No.\tOffset(hex)\tLength(hex)\tLength(KiB)\n====================================================");
 	for (uint32_t i = 0; i < preader.fileCount_real; i += 1) {
-		printf("%u\t0x%08x\t0x%08x\n",
+		printf("%u\t0x%08x\t0x%08x\t%lf\n",
 		    i,
 		    preader.fileArray[i]->relativeOffset,
-		    preader.fileArray[i]->length);
+		    preader.fileArray[i]->length,
+		    B2KB(preader.fileArray[i]->length));
 	}
 
 	PAKReader_clear(&preader);
