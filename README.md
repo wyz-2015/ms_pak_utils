@@ -112,6 +112,12 @@ $ tar -xf ./CCC.tar.xz ccc --to-stdout | ./pklz -d -o./ccc.decompressed -v
 $ ./pklz -z ./ddd.txt -o./d/dd.pklz
 ```
 
+## 编译
+
+Linux下大概率直接`make`就行了。
+
+Windows下，需要`Cygwin`或者`MSYS2`。不过我没有测试编译的条件，没有装有上述环境的Windows电脑……
+
 ## 许可证
 
 LGPL >= 3
