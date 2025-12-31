@@ -24,6 +24,7 @@ extern void PAKReader_read_metadata(PAKReader* __restrict preader);			     // �
 extern void PAKReader_read_content(PAKReader* __restrict preader, const uint32_t fileIndex); // 读取PAK_File中的内容数据
 extern void PAKReader_copy_content(PAKReader* __restrict preader, const uint32_t fileIndex); // 将PAK中指定序号的文件拷出
 extern void PAKReader_clear(PAKReader* __restrict preader);				     // 释放类的内存，类本身仍需要额外释放
+extern bool PAKReader_file_check(PAKReader* __restrict preader);			     // 检查文件
 
 extern void extract(const Args* __restrict args); // 前端函数，解压
 extern void list(const Args* __restrict args);	  // 前端函数，罗列文件表

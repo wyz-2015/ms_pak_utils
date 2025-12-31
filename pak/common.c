@@ -16,7 +16,7 @@ uint32_t get_file_lines(FILE* restrict f)
 
 	fseek(f, 0, 0);
 
-	char c;
+	int c;
 	while ((c = fgetc(f)) != EOF) {
 		if (c == '\n') {
 			LFCount += 1;
@@ -67,7 +67,7 @@ int strcasecmp(const char* s1, const char* s2) // 不计大小写地比较两个
 
 bool feof_(FILE* restrict inFile) // 是否到达文件结尾
 {
-	char cTest = fgetc(inFile); // 试取字
+	int cTest = fgetc(inFile); // 试取字
 
 	if (cTest != EOF) {
 		ungetc(cTest, inFile); // 若不是则放回流中，甚至可以是stdin

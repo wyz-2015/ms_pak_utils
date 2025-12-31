@@ -1,6 +1,18 @@
 #include "reader.h"
 #include <sys/stat.h>
 
+bool PAKReader_file_check(PAKReader* restrict preader) // 检查文件
+{
+	const PAK_Item* lastItem = preader->itemTable[preader->itemCount - 1];
+	uint32_t fileLen = lastItem->relativeOffset + lastItem->fileLength, fileLen_real = get_file_len(preader->pak);
+
+	if (abs(fileLen - fileLen_real) < sizeof(uint32_t)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 void PAKReader_init(PAKReader* restrict preader, const Args* args)
 {
 	preader->args = args;
@@ -31,6 +43,11 @@ void PAKReader_init(PAKReader* restrict preader, const Args* args)
 			error(ENOMEM, ENOMEM, "%s：为preader->tiemTable[%u](%p)malloc失败", __func__, i, preader->itemTable[i]);
 		}
 		fread(preader->itemTable[i], sizeof(PAK_Item), 1, preader->pak);
+	}
+
+	// 检查文件
+	if (not PAKReader_file_check(preader)) {
+		error(EPERM, EPERM, "%s：传入的文件%s(%p)疑似不是MSXX PAK文件，至少不符合文件头或文件目录规定", __func__, preader->args->filePath, preader->pak);
 	}
 
 	// 初始化文件数组

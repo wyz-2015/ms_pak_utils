@@ -26,6 +26,7 @@ extern void PAKReader_init(PAKReader* __restrict preader, const Args* args);
 extern void PAKReader_clear(PAKReader* __restrict preader);
 extern void PAKReader_read_content(PAKReader* __restrict preader, const uint32_t fileIndex); // 读取文件内容。只有要进行提取操作时才读取。建立目录还是必要的。
 extern void PAKReader_copy_content(PAKReader* __restrict preader, const uint32_t fileIndex, const char* outFilePath);
+extern bool PAKReader_file_check(PAKReader* __restrict preader); // 文件头与偏移表检查
 
 extern void extract(Args* __restrict args);
 extern void list(Args* __restrict args);

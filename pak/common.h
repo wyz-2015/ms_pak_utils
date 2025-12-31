@@ -15,7 +15,7 @@
 
 #define min(a, b) ((a) <= (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
-#define abs(a) ((a) >= 0 ? (a) : (b))
+#define abs(a) ((a) >= 0 ? (a) : (-(a)))
 
 #define B2KB(x) ((double)(x) / 1024)
 

@@ -15,6 +15,23 @@ off_t get_file_len(FILE* f)
 #define max(a, b) ((a) >= (b) ? (a) : (b))
 */
 
+bool PAKReader_file_check(PAKReader* restrict preader) // 文件头与偏移表检查
+{
+	char magicStr[5] = { 0 };
+	memcpy(magicStr, preader->header->magicStr, 4);
+
+	if (not strstr("DATA MENU FONT STRD", magicStr)) {
+		return false;
+	}
+
+	uint32_t fileLen_real = get_file_len(preader->pak), fileLen = preader->fileOffsetTable[preader->fileOffsetTableCount - 1];
+	if (not(fileLen - fileLen_real < 4 * sizeof(uint32_t))) { // 一般fileLen > fileLen_real
+		return false;
+	}
+
+	return true;
+}
+
 void PAKReader_init(PAKReader* restrict preader, const Args* restrict args)
 {
 	preader->args = args;
@@ -40,6 +57,11 @@ void PAKReader_init(PAKReader* restrict preader, const Args* restrict args)
 	}
 
 	fread(preader->fileOffsetTable, sizeof(uint32_t), preader->fileOffsetTableCount, preader->pak);
+
+	// 文件检查
+	if (not PAKReader_file_check(preader)) {
+		error(EPERM, EPERM, "%s：传入的文件%s(%p)疑似不是MS3D、6、7 PAK文件，至少不符合文件头或偏移表的规定", __func__, preader->args->filePath, preader->pak);
+	}
 
 	// 记录文件数据。本来在初始化时就计算，但为了MS7的复杂情况，将功能分离出去。
 

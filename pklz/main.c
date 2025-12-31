@@ -41,6 +41,10 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 		args->verbose = true;
 		break;
 	}
+	case 'o': {
+		args->outFilePath = arg;
+		break;
+	}
 	case ARGP_KEY_ARG: {
 		args->inFilePath = arg;
 		break;
@@ -57,7 +61,8 @@ int main(int argc, char** argv)
 		.mode = '\0',
 		.verbose = false,
 		.inFilePath = NULL,
-		.outFilePath = NULL
+		.outFilePath = NULL,
+		.toStdout = false
 	};
 
 	if (argc == 1) {
