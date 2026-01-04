@@ -13,7 +13,7 @@ static const struct argp_option options[] = {
 	{ "extract", 'x', NULL, OPTION_ARG_OPTIONAL, "从归档中解出文件" },
 	{ "list", 't', NULL, OPTION_ARG_OPTIONAL, "列出归档内容" },
 	{ "verbose", 'v', NULL, OPTION_ARG_OPTIONAL, "显示详细信息" },
-	{ "files-from", 'T', "FILE", OPTION_ARG_OPTIONAL, "从FILE中获取文件名来解包文件\n读取本程序-t输出格式的外部文件表FILE，据此创建PAK包。文件表中只有subDir和subID的值是必须正确的" },
+	{ "files-from", 'T', "FILE", OPTION_ARG_OPTIONAL, "从FILE中获取文件名来解包文件 / 读取本程序-t输出格式的外部文件表FILE，据此创建PAK包。文件表中只有subDir和subID的值是必须正确的" },
 	{ 0 }
 };
 
