@@ -17,3 +17,8 @@ MSXX_PAK : $(BIN)
 
 $(BIN) : $(SRC_C) $(SRC_H)
 	$(CC) $(SRC_C) $(INCLUDE) $(LIBS) $(CFLAGS) -o $(BIN)
+
+.PHONY : clean
+
+clean :
+	rm $(BIN) -v
