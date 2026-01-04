@@ -119,17 +119,42 @@ int main(int argc, char** argv)
 
 	argp_parse(&argp, argc, argv, 0, 0, &args);
 
-	if (args.fileListPath) { // 处理-T / --files-from
-				 // Warning: 很奇怪，这段代码用clang(18.1.3 (1ubuntu1), x86_64-pc-linux-gnu)编译会出BUG
+	// 处理-T / --files-from
+	uint32_t lines, lines_real;
+	char **itemDeque_fromFile = NULL, *tempStr = NULL;
+
+	if (args.fileListPath) {
 		FILE* fileListFile = fopen(args.fileListPath, "rt");
 		if (not fileListFile) {
 			error(ENOENT, ENOENT, "%s：无法文本模式打开文件%s的指针%p", __func__, args.fileListPath, fileListFile);
 		}
 
-		uint32_t lines = get_file_lines(fileListFile), lines_real = 0;
+		lines = get_file_lines(fileListFile);
+		lines_real = 0;
+		/* 作用域问题。出了这个大括号，两个数组变量就不再有效。此前带问题的程序能正常执行，简直就是奇迹
 		char itemDeque_fromFile[lines][FILEPATH_LEN_MAX], tempStr[FILEPATH_LEN_MAX];
 		memset(itemDeque_fromFile, 0, lines * FILEPATH_LEN_MAX * sizeof(char));
+		*/
+		tempStr = (char*)malloc(FILEPATH_LEN_MAX * sizeof(char));
+		if (not tempStr) {
+			error(ENOMEM, ENOMEM, "%s：为tempStr(%p)malloc失败", __func__, tempStr);
+		}
 		memset(tempStr, 0, FILEPATH_LEN_MAX * sizeof(char));
+
+		itemDeque_fromFile = (char**)malloc(lines * sizeof(char*));
+		if (not itemDeque_fromFile) {
+			error(ENOMEM, ENOMEM, "%s：为itemDeque_fromfile(%p)malloc失败", __func__, itemDeque_fromFile);
+		}
+		for (uint32_t i = 0; i < lines; i += 1) {
+			itemDeque_fromFile[i] = (char*)malloc(FILEPATH_LEN_MAX * sizeof(char));
+			if (not itemDeque_fromFile[i]) {
+				error(ENOMEM, ENOMEM, "%s：为itemDeque_fromfile[%u](%p)malloc失败", __func__, i, itemDeque_fromFile);
+			}
+
+			memset(itemDeque_fromFile[i], '\0', FILEPATH_LEN_MAX * sizeof(char));
+		}
+
+		// 上面都是繁琐的申请内存，下面是读取
 
 		while (fgets(tempStr, FILEPATH_LEN_MAX, fileListFile)) {
 			str_rstrip(tempStr, strlen(tempStr));
@@ -166,6 +191,20 @@ int main(int argc, char** argv)
 	}
 	}
 
+	if (tempStr) {
+		free(tempStr);
+		tempStr = NULL;
+	}
+	if (itemDeque_fromFile) {
+		for (uint32_t l = 0; l < lines; l += 1) {
+			if (itemDeque_fromFile[l]) {
+				free(itemDeque_fromFile[l]);
+				itemDeque_fromFile[l] = NULL;
+			}
+		}
+		free(itemDeque_fromFile);
+		itemDeque_fromFile = NULL;
+	}
 	if (itemList) {
 		Deque_clear(itemList);
 		free(itemList);

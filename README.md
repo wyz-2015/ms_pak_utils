@@ -39,6 +39,8 @@ Usage: /path2bin/ms3d_pak [-ctvx] [-C[DIR]] [-f[ARCHIVE]] [-m[str]] [-p[str]] [-
   -T, --files-from[=FILE]    从FILE中获取文件名来解压或创建文件
   -v, --verbose              显示详细信息
   -x, --extract              从归档中解出文件
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
 
 Mandatory or optional arguments to long options are also mandatory or optional
 for any corresponding short options.
@@ -72,15 +74,32 @@ Usage: /path2bin/msxx_pak [-ctvx] [-C[DIR]] [-f[ARCHIVE]] [-T[FILE]] [--create]
   -f, --file[=ARCHIVE]       操作目标PAK ARCHIVE文件
   -t, --list                 列出归档内容
   -T, --files-from[=FILE]
-                             从FILE中获取文件名来解压或创建文件(目前无效)
+                             从FILE中获取文件名来解压或创建文件
   -v, --verbose              显示详细信息
   -x, --extract              从归档中解出文件
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
 
 Mandatory or optional arguments to long options are also mandatory or optional
 for any corresponding short options.
 ```
 
-除了`msxx_pak`暂不支持打包，只支持解包。其余操作与`ms3d_pak`基本一致，这里不作举例。
+例：解包`COMMON.PAK`，修改文件后重新打包。(假设调用程序的指令为`./msxx_pak`，`COMMON.PAK`已在当前目录下)
+
+* 解包并生成列表文件：
+
+```
+$ mkdir ./COMMON/
+$ ./msxx_pak -xvf./COMMON.PAK -C./COMMON
+$ ./msxx_pak -tf./COMMON.PAK > ./COMMON.PAK.txt # 这样生成列表文件
+```
+
+* 修改完成后：
+
+```
+$ mv ./COMMON.PAK ./COMMON.PAK.bak # 为新生成的COMMON.PAK让位
+$ ./msxx_pak -cvf./COMMON.PAK -C./COMMON --files-from=./COMMON.PAK.txt # 若仅仅是新增文件，那此文件完全可以不用修改。文件列表中仅有subDir与subID两项是重要的，指定其在包内的subDir与subID的
+```
 
 ### pklz
 
@@ -94,6 +113,8 @@ Usage: /path2bin/pklz [-dvz] [-o FILE] [--decompress] [--out-file=FILE] [--verbo
   -v, --verbose              显示详细信息
   -z, --compress
                              压缩。未指定传入文件时，会从stdin读取数据
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
 
 Mandatory or optional arguments to long options are also mandatory or optional
 for any corresponding short options.

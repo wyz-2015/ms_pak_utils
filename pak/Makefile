@@ -1,5 +1,6 @@
 CC=gcc
-SRC=deque.c reader.c main.c writer.c common.c
+SRC_C=deque.c reader.c main.c writer.c common.c
+SRC_H=args.h common.h deque.h pak.h reader.h writer.h
 INCLUDE=-I./
 BIN=./../bin/ms3d_pak
 LIBS=
@@ -13,5 +14,10 @@ all : PAK
 
 PAK : $(BIN)
 
-$(BIN) : $(SRC)
-	$(CC) $(SRC) $(INCLUDE) $(LIBS) -o $(BIN)
+$(BIN) : $(SRC_C) $(SRC_H)
+	$(CC) $(SRC_C) $(INCLUDE) $(LIBS) -o $(BIN)
+
+.PHONY : clean
+
+clean :
+	rm $(BIN) -v

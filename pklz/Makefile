@@ -1,5 +1,6 @@
 CC=gcc
-SRC=common.c decompress.c compress.c main.c
+SRC_C=common.c decompress.c compress.c main.c
+SRC_H=args.h common.h compress.h decompress.h pklz.h
 INCLUDE=-I./
 BIN=./../bin/pklz
 LIBS=
@@ -13,5 +14,10 @@ all : PKLZ
 
 PKLZ : $(BIN)
 
-$(BIN) : $(SRC)
-	$(CC) $(SRC) $(INCLUDE) $(LIBS) -o $(BIN)
+$(BIN) : $(SRC_C) $(SRC_H)
+	$(CC) $(SRC_C) $(INCLUDE) $(LIBS) -o $(BIN)
+
+.PHONY : clean
+
+clean :
+	rm $(BIN) -v
