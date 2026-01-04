@@ -12,6 +12,7 @@ typedef struct PAKReader {
 
 	PAK_Item** itemTable;
 	uint32_t itemCount;
+	uint32_t itemCount_real;
 
 	PAK_File** fileArray;
 

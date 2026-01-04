@@ -31,13 +31,14 @@ void PAKReader_init(PAKReader* restrict preader, const Args* args)
 	fread(preader->header, sizeof(PAK_Header), 1, preader->pak);
 
 	preader->itemCount = preader->header->fileCount; // MSXX的PAK更好一点，这个数是可以相信的
+	preader->itemCount_real = preader->itemCount;
 
 	// 读文件目录
-	preader->itemTable = (PAK_Item**)malloc(sizeof(PAK_Item*) * preader->itemCount);
+	preader->itemTable = (PAK_Item**)malloc(sizeof(PAK_Item*) * preader->itemCount_real);
 	if (not preader->itemTable) {
 		error(ENOMEM, ENOMEM, "%s：为preader->tiemTable(%p)malloc失败", __func__, preader->itemTable);
 	}
-	for (uint32_t i = 0; i < preader->itemCount; i += 1) {
+	for (uint32_t i = 0; i < preader->itemCount_real; i += 1) {
 		preader->itemTable[i] = (PAK_Item*)malloc(sizeof(PAK_Item));
 		if (not preader->itemTable[i]) {
 			error(ENOMEM, ENOMEM, "%s：为preader->tiemTable[%u](%p)malloc失败", __func__, i, preader->itemTable[i]);
@@ -51,11 +52,11 @@ void PAKReader_init(PAKReader* restrict preader, const Args* args)
 	}
 
 	// 初始化文件数组
-	preader->fileArray = (PAK_File**)malloc(sizeof(PAK_File*) * preader->itemCount);
+	preader->fileArray = (PAK_File**)malloc(sizeof(PAK_File*) * preader->itemCount_real);
 	if (not preader->fileArray) {
 		error(ENOMEM, ENOMEM, "%s：为preader->fileArray(%p)malloc失败", __func__, preader->fileArray);
 	}
-	for (uint32_t i = 0; i < preader->itemCount; i += 1) {
+	for (uint32_t i = 0; i < preader->itemCount_real; i += 1) {
 		preader->fileArray[i] = (PAK_File*)malloc(sizeof(PAK_File));
 		if (not preader->fileArray[i]) {
 			error(ENOMEM, ENOMEM, "%s：为preader->fileArray[%u](%p)malloc失败", __func__, i, preader->fileArray[i]);
@@ -72,7 +73,7 @@ void PAKReader_init(PAKReader* restrict preader, const Args* args)
 
 void PAKReader_read_metadata(PAKReader* restrict preader) // 读取PAK_File中的元数据
 {
-	for (uint32_t i = 0; i < preader->itemCount; i += 1) {
+	for (uint32_t i = 0; i < preader->itemCount_real; i += 1) {
 		preader->fileArray[i]->relativeOffset = preader->itemTable[i]->relativeOffset;
 		preader->fileArray[i]->fileLength = preader->itemTable[i]->fileLength;
 		preader->fileArray[i]->bufferSize = preader->fileArray[i]->fileLength;
@@ -105,7 +106,7 @@ void PAKReader_copy_content(PAKReader* restrict preader, const uint32_t fileInde
 		error(ENOENT, ENOENT, "%s：输出目录%s不存在", __func__, preader->args->dir);
 	}
 
-	sprintf(dir, "%s/0x%08x", preader->args->dir, preader->fileArray[fileIndex]->subDir);
+	sprintf(dir, "%s/0x%x", preader->args->dir, preader->fileArray[fileIndex]->subDir);
 
 	if (not(stat(dir, &sb) == 0 and S_ISDIR(sb.st_mode))) { // 创建以subDir为名的子目录
 		if (mkdir(dir, 0755) != 0) {
@@ -113,9 +114,9 @@ void PAKReader_copy_content(PAKReader* restrict preader, const uint32_t fileInde
 		}
 	}
 
-	sprintf(outFilePath, "%s/0x%08x", dir, preader->fileArray[fileIndex]->subID);
+	sprintf(outFilePath, "%s/0x%x", dir, preader->fileArray[fileIndex]->subID);
 	if (preader->args->verbose) {
-		printf("0x%08x/0x%08x\n", preader->fileArray[fileIndex]->subDir, preader->fileArray[fileIndex]->subID);
+		printf("0x%x/0x%x\n", preader->fileArray[fileIndex]->subDir, preader->fileArray[fileIndex]->subID);
 	}
 
 	FILE* outFile = fopen(outFilePath, "wb");
@@ -137,7 +138,7 @@ void PAKReader_clear(PAKReader* restrict preader)
 	}
 
 	if (preader->itemTable) {
-		for (uint32_t i = 0; i < preader->itemCount; i += 1) {
+		for (uint32_t i = 0; i < preader->itemCount_real; i += 1) {
 			if (preader->itemTable[i]) {
 				free(preader->itemTable[i]);
 				preader->itemTable[i] = NULL;
@@ -148,7 +149,7 @@ void PAKReader_clear(PAKReader* restrict preader)
 	}
 
 	if (preader->fileArray) {
-		for (uint32_t i = 0; i < preader->itemCount; i += 1) {
+		for (uint32_t i = 0; i < preader->itemCount_real; i += 1) {
 			if (preader->fileArray[i]) {
 				if (preader->fileArray[i]->content) {
 					free(preader->fileArray[i]->content);

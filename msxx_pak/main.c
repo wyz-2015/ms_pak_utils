@@ -1,7 +1,7 @@
 #include "args.h"
 #include "deque.h"
 #include "reader.h"
-// #include "writer.h"
+#include "writer.h"
 #include <argp.h>
 
 Deque* itemList = NULL;
@@ -13,7 +13,7 @@ static const struct argp_option options[] = {
 	{ "extract", 'x', NULL, OPTION_ARG_OPTIONAL, "从归档中解出文件" },
 	{ "list", 't', NULL, OPTION_ARG_OPTIONAL, "列出归档内容" },
 	{ "verbose", 'v', NULL, OPTION_ARG_OPTIONAL, "显示详细信息" },
-	{ "files-from", 'T', "FILE", OPTION_ARG_OPTIONAL, "从FILE中获取文件名来解压或创建文件(目前无效)" },
+	{ "files-from", 'T', "FILE", OPTION_ARG_OPTIONAL, "从FILE中获取文件名来解包文件\n读取本程序-t输出格式的外部文件表FILE，据此创建PAK包。文件表中只有subDir和subID的值是必须正确的" },
 	{ 0 }
 };
 
@@ -61,7 +61,7 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 		break;
 	}
 	case 'T': {
-		// TODO
+		args->fileListPath = arg;
 		break;
 	}
 	case ARGP_KEY_ARG: {
@@ -73,7 +73,7 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 	return 0;
 }
 
-static struct argp argp = { options, parse_opt, NULL, "一款支持 解包、罗列、打包(尚未实现) Metal Slug XX (PSP)中出现的.pak特有打包格式文件 的工具。" };
+static struct argp argp = { options, parse_opt, NULL, "一款支持 解包、罗列、打包 Metal Slug XX (PSP)中出现的.pak特有打包格式文件 的工具。" };
 
 int main(int argc, char** argv)
 {
@@ -138,8 +138,8 @@ int main(int argc, char** argv)
 		break;
 	}
 	case 'c': {
-		puts("由于文件目录条目(pak.h: PAK_Item)中，前2个uint32_t数的意义尚未摸清，目前不能实现打包逻辑"); // TODO
-		// archive(&args);
+		// puts("由于文件目录条目(pak.h: PAK_Item)中，前2个uint32_t数的意义尚未摸清，目前不能实现打包逻辑");
+		archive(&args);
 		break;
 	}
 	default: {
