@@ -8,8 +8,8 @@ Deque* itemList = NULL;
 
 static const struct argp_option options[] = {
 	{ "directory", 'C', "DIR", OPTION_ARG_OPTIONAL, "改变至目录DIR" },
-	{ "file", 'f', "ARCHIVE", OPTION_ARG_OPTIONAL, "操作目标PAK ARCHIVE文件" },
-	{ "create", 'c', NULL, OPTION_ARG_OPTIONAL, "创建一个新归档" },
+	{ "file", 'f', "ARCHIVE", 0, "操作目标PAK ARCHIVE文件(必要)" },
+	{ "create", 'c', NULL, OPTION_ARG_OPTIONAL, "创建一个新归档(此模式下-C参数失效)" },
 	{ "extract", 'x', NULL, OPTION_ARG_OPTIONAL, "从归档中解出文件" },
 	{ "list", 't', NULL, OPTION_ARG_OPTIONAL, "列出归档内容" },
 	{ "verbose", 'v', NULL, OPTION_ARG_OPTIONAL, "显示详细信息" },
@@ -29,9 +29,6 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 		break;
 	}
 	case 'f': {
-		if (arg == NULL) {
-			error(EINVAL, EINVAL, "读取-f / --file的参数“%s”失败", arg);
-		}
 		args->filePath = arg;
 		break;
 	}
@@ -154,6 +151,10 @@ int main(int argc, char** argv)
 		fclose(fileListFile);
 	}
 
+	if (not args.filePath) {
+		error(EINVAL, EINVAL, "未指定-f参数，它是必要的");
+	}
+
 	switch (args.mode) {
 	case 'x': {
 		extract(&args);
@@ -164,6 +165,9 @@ int main(int argc, char** argv)
 		break;
 	}
 	case 'c': {
+		if (args.itemDeque->__len__ == 0) {
+			error(EINVAL, EINVAL, "-c模式下，必须传入欲打包的文件");
+		}
 		// puts("由于文件目录条目(pak.h: PAK_Item)中，前2个uint32_t数的意义尚未摸清，目前不能实现打包逻辑");
 		archive(&args);
 		break;
@@ -173,6 +177,8 @@ int main(int argc, char** argv)
 		break;
 	}
 	}
+
+	// 释放资源，收尾
 
 	if (tempStr) {
 		free(tempStr);
