@@ -205,20 +205,21 @@ void list(const Args* restrict args)
 
 	char s1[15], s2[15], s3[10], s4[10];
 	// puts("No.\tOffset(hex)\tLength(hex)\n=====================================");
-	printf("%-5s%-10s%-10s%-15s%-20s%-15s\n", "No.", "subDir", "subID", "Offset(hex)", "Length(hex, Byte)", "Length(KiB)");
-	puts("========================================================================");
+	printf("%-5s%-10s%-10s%-15s%-20s%-15s%-50s\n", "No.", "subDir", "subID", "Offset(hex)", "Length(hex, Byte)", "Length(KiB)", "Category");
+	puts("=======================================================================================================================");
 	for (uint32_t i = 0; i < preader.itemCount; i += 1) {
 		sprintf(s1, "0x%08x", preader.fileArray[i]->relativeOffset);
 		sprintf(s2, "0x%08x", preader.fileArray[i]->fileLength);
 		sprintf(s3, "0x%x", preader.fileArray[i]->subDir);
 		sprintf(s4, "0x%x", preader.fileArray[i]->subID);
-		printf("%-5u%-10s%-10s%-15s%-20s%-15lf\n",
+		printf("%-5u%-10s%-10s%-15s%-20s%-15lf%-50s\n",
 		    i,
 		    s3,
 		    s4,
 		    s1,
 		    s2,
-		    B2KB(preader.fileArray[i]->fileLength));
+		    B2KB(preader.fileArray[i]->fileLength),
+		    get_pakFile_category(preader.fileArray[i]->subDir));
 	}
 
 	PAKReader_clear(&preader);

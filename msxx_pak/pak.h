@@ -32,4 +32,6 @@ typedef struct PAK_File { // 用于处理包中文件的结构体，不是指pak
 	uint32_t relativeOffset; // 相对偏移
 } PAK_File;
 
+extern const char* get_pakFile_category(const unsigned int subDir); // 根据subDir数，返回描述类型的文字
+
 #endif

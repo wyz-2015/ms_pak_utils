@@ -1,5 +1,5 @@
 CC=gcc
-SRC_C=deque.c reader.c main.c common.c writer.c
+SRC_C=deque.c reader.c main.c common.c writer.c pak.c
 SRC_H=args.h common.h deque.h pak.h reader.h writer.h
 INCLUDE=-I./
 BIN=./../bin/msxx_pak
