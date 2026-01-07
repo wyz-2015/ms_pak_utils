@@ -7,7 +7,7 @@ LIBS=
 
 ifeq ($(OS),Windows_NT)
 	LIBS+=-largp
-	BIN+=.exe
+	BIN:=$(BIN).exe
 endif
 
 all : PKLZ

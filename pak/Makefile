@@ -6,7 +6,7 @@ BIN=./../bin/ms3d_pak
 LIBS=
 
 ifeq ($(OS),Windows_NT)
-	BIN+=.exe
+	BIN:=$(BIN).exe
 	LIBS+=-largp
 endif
 

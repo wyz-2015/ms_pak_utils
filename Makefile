@@ -9,9 +9,9 @@ MSXX_PAK :
 PKLZ :
 	make -C ./pklz/
 
-.PHONY : clean
-
 clean :
 	make -C ./pak/ clean
 	make -C ./msxx_pak/ clean
 	make -C ./pklz/ clean
+
+.PHONY : PAK MSXX_PAK PKLZ clean
