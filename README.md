@@ -16,6 +16,10 @@ OOP写法，日后若有需要，或许还可以据此改为库，扩展别的�
 * [PS2《合金弹头3D》汉化笔记](https://www.bilibili.com/read/cv44077327/)
 * [Github repository: Ailyth99/RetroGameLocalization/](https://github.com/Ailyth99/RetroGameLocalization/)
 
+礼赞Bilibili UP主、群友：[信标先生](https://space.bilibili.com/34243531/)
+
+感谢其友情提供了：[MSXX资源文件中各种类型代号文件的描述](https://www.bilibili.com/video/BV141sEeHEHQ/?share_source=copy_web&vd_source=311fbce1b59d9cdaba8d32f9d2e5bad9)
+
 ## 工具使用
 
 ### pak
