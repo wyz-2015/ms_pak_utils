@@ -24,8 +24,8 @@ bool PAKReader_file_check(PAKReader* restrict preader) // 文件头与偏移表�
 		return false;
 	}
 
-	uint32_t fileLen_real = get_file_len(preader->pak), fileLen = preader->fileOffsetTable[preader->fileOffsetTableCount - 1];
-	if (not(fileLen - fileLen_real < 4 * sizeof(uint32_t))) { // 一般fileLen > fileLen_real
+	long long int fileLen_real = get_file_len(preader->pak), fileLen = preader->fileOffsetTable[preader->fileOffsetTableCount - 1];
+	if (not(abs(fileLen - fileLen_real) < 4 * (long long int)sizeof(uint32_t))) { // 一般fileLen > fileLen_real
 		return false;
 	}
 
