@@ -6,7 +6,7 @@ bool PAKReader_file_check(PAKReader* restrict preader) // 检查文件
 	const PAK_Item* lastItem = preader->itemTable[preader->itemCount - 1];
 	uint32_t fileLen = lastItem->relativeOffset + lastItem->fileLength, fileLen_real = get_file_len(preader->pak);
 
-	if (abs(fileLen - fileLen_real) < sizeof(uint32_t)) {
+	if (abs(fileLen - fileLen_real) < 4 * sizeof(uint32_t)) {
 		return true;
 	} else {
 		return false;
