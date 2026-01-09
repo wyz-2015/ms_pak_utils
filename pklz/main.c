@@ -4,10 +4,10 @@
 #include <argp.h>
 
 static const struct argp_option options[] = {
-	{ "compress", 'z', NULL, OPTION_ARG_OPTIONAL, "压缩。未指定传入文件时，会从stdin读取数据" },
-	{ "decompress", 'd', NULL, OPTION_ARG_OPTIONAL, "解压缩。未指定传入文件时，会从stdin读取数据" },
+	{ "compress", 'z', NULL, 0, "压缩。未指定传入文件时，会从stdin读取数据" },
+	{ "decompress", 'd', NULL, 0, "解压缩。未指定传入文件时，会从stdin读取数据" },
 	// { "stdout", 'c', NULL, OPTION_ARG_OPTIONAL, "向标准输出写入" },
-	{ "verbose", 'v', NULL, OPTION_ARG_OPTIONAL, "显示详细信息" },
+	{ "verbose", 'v', NULL, 0, "显示详细信息" },
 	{ "out-file", 'o', "FILE", 0, "指定输出文件为FILE(必须)" },
 	{ 0 }
 };

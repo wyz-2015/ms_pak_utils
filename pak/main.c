@@ -7,15 +7,15 @@
 Deque* itemList = NULL;
 
 static const struct argp_option options[] = {
-	{ "directory", 'C', "DIR", OPTION_ARG_OPTIONAL, "改变至目录DIR" },
+	{ "directory", 'C', "DIR", 0, "改变至目录DIR" },
 	{ "file", 'f', "ARCHIVE", 0, "操作目标PAK ARCHIVE文件(必要)" },
-	{ "create", 'c', NULL, OPTION_ARG_OPTIONAL, "创建一个新归档(此模式下-C参数失效)" },
-	{ "extract", 'x', 0, OPTION_ARG_OPTIONAL, "从归档中解出文件" },
-	{ "list", 't', NULL, OPTION_ARG_OPTIONAL, "列出归档内容" },
-	{ "verbose", 'v', 0, OPTION_ARG_OPTIONAL, "显示详细信息" },
-	{ "prefix", 'p', "str", OPTION_ARG_OPTIONAL, "由于这种PAK包格式连原文件名都不保留，输出的文件名只能以其在包中的相对偏移代替。使用此选项可以在输出文件名的“偏移值”之前加上一个前缀，便于标识" },
-	{ "magic", 'm', "str", OPTION_ARG_OPTIONAL, "如果是新建PAK归档包，则规定文件头的魔术字，限\"DATA\" \"MENU\" \"FONT\" \"STRD\"，默认\"DATA\"。" },
-	{ "files-from", 'T', "FILE", OPTION_ARG_OPTIONAL, "从FILE中获取文件名来解压或创建文件" },
+	{ "create", 'c', NULL, 0, "创建一个新归档(此模式下-C参数失效)" },
+	{ "extract", 'x', 0, 0, "从归档中解出文件" },
+	{ "list", 't', NULL, 0, "列出归档内容" },
+	{ "verbose", 'v', 0, 0, "显示详细信息" },
+	{ "prefix", 'p', "str", 0, "由于这种PAK包格式连原文件名都不保留，输出的文件名只能以其在包中的相对偏移代替。使用此选项可以在输出文件名的“偏移值”之前加上一个前缀，便于标识" },
+	{ "magic", 'm', "str", 0, "如果是新建PAK归档包，则规定文件头的魔术字，限\"DATA\" \"MENU\" \"FONT\" \"STRD\"，默认\"DATA\"。" },
+	{ "files-from", 'T', "FILE", 0, "从FILE中获取文件名来解压或创建文件" },
 	// { 0, '\0', "str", 0, "传入文件路径" }
 	{ 0 }
 };
