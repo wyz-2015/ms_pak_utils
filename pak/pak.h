@@ -4,7 +4,7 @@
 #include "common.h"
 
 typedef struct PAK_Header { // [0x00, 0x10)	PAK头部，0x10 Bytes。区间表示相对于PAK文件的偏移
-	char magicStr[4];   // [0x00, 0x04)	魔术字，"DATA" "MENU" "FONT" "STRD"，无'\0'结尾，0x04 Bytes
+	char magicStr[4];   // [0x00, 0x04)	魔术字，"DATA" "MENU" "FONT" "STRD" "SEDT"，无'\0'结尾，0x04 Bytes
 	int32_t unknown1;   // [0x04, 0x08)
 	int32_t unknown2;   // [0x08, 0x0c)
 	uint32_t fileCount; // [0x0c, 0x10)	包内文件数，重要数据

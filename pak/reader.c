@@ -20,7 +20,7 @@ bool PAKReader_file_check(PAKReader* restrict preader) // 文件头与偏移表�
 	char magicStr[5] = { 0 };
 	memcpy(magicStr, preader->header->magicStr, 4);
 
-	if (not strstr("DATA MENU FONT STRD", magicStr)) {
+	if (not strstr("DATA MENU FONT STRD SEDT", magicStr)) {
 		return false;
 	}
 

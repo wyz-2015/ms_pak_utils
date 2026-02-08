@@ -14,7 +14,7 @@ static const struct argp_option options[] = {
 	{ "list", 't', NULL, 0, "列出归档内容" },
 	{ "verbose", 'v', 0, 0, "显示详细信息" },
 	{ "prefix", 'p', "str", 0, "由于这种PAK包格式连原文件名都不保留，输出的文件名只能以其在包中的相对偏移代替。使用此选项可以在输出文件名的“偏移值”之前加上一个前缀，便于标识" },
-	{ "magic", 'm', "str", 0, "如果是新建PAK归档包，则规定文件头的魔术字，限\"DATA\" \"MENU\" \"FONT\" \"STRD\"，默认\"DATA\"。" },
+	{ "magic", 'm', "str", 0, "如果是新建PAK归档包，则规定文件头的魔术字，限\"DATA\" \"MENU\" \"FONT\" \"STRD\" \"SEDT\"，默认\"DATA\"。" },
 	{ "files-from", 'T', "FILE", 0, "从FILE中获取文件名来解压或创建文件" },
 	// { 0, '\0', "str", 0, "传入文件路径" }
 	{ 0 }
@@ -67,10 +67,10 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 		break;
 	}
 	case 'm': {
-		if (strlen(arg) == 4 and strstr("DATA MENU FONT STRD", arg)) { // 字数匹配，字串匹配
+		if (strlen(arg) == 4 and strstr("DATA MENU FONT STRD SEDT", arg)) { // 字数匹配，字串匹配
 			args->magicStr = arg;
 		} else {
-			error(EINVAL, EINVAL, "魔术字并非\"DATA\" \"MENU\" \"FONT\" \"STRD\"其中之一");
+			error(EINVAL, EINVAL, "魔术字并非\"DATA\" \"MENU\" \"FONT\" \"STRD\" \"SEDT\"其中之一");
 		}
 	}
 	case 'T': {
